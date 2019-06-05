@@ -1,14 +1,20 @@
 import React, {Component} from "react";
 import {Tab, Tabs} from "react-bootstrap";
+import ArrowIcons from "../shared/icons/arrow-icons.component";
+
 
 export class ESGFSearchPortal extends Component {
     constructor(props) {
         super(props);
 
+        let {tabs} = props;
+
+        let firstTab = Object.keys(tabs)[0];
+
         this.state = {
-            tabs: this.props.tabs,
-            key: this.props.tabs[0],
-            prevKey: "CLR"
+            tabs: tabs,
+            key: firstTab,
+            prevKey: firstTab
         };
 
     }
@@ -23,19 +29,24 @@ export class ESGFSearchPortal extends Component {
         let {tabs, key, prevKey} = this.state;
 
         let tabComponents = Object.keys(tabs)
-        .map(name => (
-            <Tab
-                eventKey={name}
-                title={name}>
-                {tabs[name]}
-            </Tab>
-        ));
+                                  .map(name => (
+                                      <Tab key={name}
+                                           eventKey={name}
+                                           transition={false}
+                                           title={name}>
+                                          {tabs[name]}
+                                      </Tab>
+                                  ));
+
+        let Arrow = key === "CLR" ? ArrowIcons.Down : ArrowIcons.Up;
 
         return (
-            <Tabs activeKey={key} 
-                onSelect={ key => this.setState({key: key, prevKey: this.state.key})}>
+            <Tabs activeKey={key}
+                  mountOnEnter={true}
+                  // unmountOnExit={true}
+                  onSelect={newKey => this.setState({prevKey: key, key: newKey})}>
                 {tabComponents}
-                <Tab tabClassName='tab-hidden' eventKey={ key === "CLR" ? prevKey : "CLR"} title={ <i class={ key === "CLR" ? 'fas fa-angle-down' : 'fas fa-angle-up'}></i> } />
+                <Tab tabClassName='tab-hidden' eventKey={key === "CLR" ? prevKey : "CLR"} title={<Arrow/>}/>
             </Tabs>
         );
     }
